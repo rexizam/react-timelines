@@ -1,19 +1,31 @@
 import {
-  START_YEAR,
-  NUM_OF_YEARS,
-  MONTH_NAMES,
-  MONTHS_PER_YEAR,
-  QUARTERS_PER_YEAR,
-  MONTHS_PER_QUARTER,
-  NUM_OF_MONTHS,
-  MAX_TRACK_START_GAP,
   MAX_ELEMENT_GAP,
   MAX_MONTH_SPAN,
-  MIN_MONTH_SPAN,
   MAX_NUM_OF_SUBTRACKS,
+  MAX_TRACK_START_GAP,
+  MIN_MONTH_SPAN,
+  MONTH_NAMES,
+  MONTHS_PER_QUARTER,
+  MONTHS_PER_YEAR,
+  NUM_OF_MONTHS,
+  NUM_OF_YEARS,
+  QUARTERS_PER_YEAR,
+  START_YEAR,
 } from './constants'
 
-import { fill, hexToRgb, colourIsLight, addMonthsToYear, addMonthsToYearAsDate, nextColor, randomTitle } from './utils'
+import {
+  addMonthsToYear,
+  addMonthsToYearAsDate,
+  colourIsLight,
+  fill,
+  getEndOfWeek,
+  getStartOfWeek,
+  getWeeksOfYear,
+  hexToRgb,
+  nextColor,
+  randomTitle
+} from './utils'
+import moment from "moment"
 
 export const buildQuarterCells = () => {
   const v = []
@@ -48,6 +60,106 @@ export const buildMonthCells = () => {
   return v
 }
 
+//export const buildWeekCells = () => {
+//    const v = []
+//    for (let i = 1; i < WEEKS_PER_YEAR; i += 1) {
+//        const startWeek = i
+//        const start = getStartOfWeek(START_YEAR, startWeek)
+//        if (start.getFullYear() !== START_YEAR) {
+//            const start = getStartOfWeek(START_YEAR, startWeek + 1)
+//            const end = getEndOfWeek(start)
+//
+//            v.push({
+//                id: `w${startWeek}`,
+//                title: `${i}`,
+//                start,
+//                end,
+//            })
+//        }
+//        else {
+//            const start = getStartOfWeek(START_YEAR, startWeek + 1)
+//            const end = getEndOfWeek(start)
+//
+//            v.push({
+//                id: `w${startWeek}`,
+//                title: `${i}`,
+//                start,
+//                end,
+//            })
+//        }
+//    }
+//
+//    if (NUM_OF_YEARS > 1) {
+//        const lastWeekOfYear = v[v.length - 1];
+//        const date = moment(new Date(lastWeekOfYear.end));
+//        const weeksOfYear = getWeeksOfYear(date);
+//        console.log(weeksOfYear);
+//        const yearNow = moment.now()
+//        const test = getWeeksOfYear(yearNow)
+//        console.log(test)
+//    }
+//
+//    return v
+//}
+
+export const buildWeekCells = () => {
+  const v = [];
+  const startYear = moment().utc().year(START_YEAR).day(1);
+  //console.log(startYear)
+  let iteration = 0;
+  let numberOfYears = NUM_OF_YEARS;
+  let weeksOfYear;
+  let year;
+
+  while (numberOfYears >= 1) {
+
+    if (iteration === 0) {
+      weeksOfYear = getWeeksOfYear(startYear);
+      //console.log(weeksOfYear)
+      year = startYear.year()
+      //console.log(year)
+    } else if (iteration >= 1) {
+      const lastWeekOfYear = v[v.length - 1];
+      //console.log(lastWeekOfYear)
+      const nextYear = moment(lastWeekOfYear.end).year();
+      //console.log(nextYear)
+      weeksOfYear = getWeeksOfYear(nextYear);
+      //console.log(weeksOfYear)
+      const y = moment(startYear).add(iteration, 'year');
+      year = y.year();
+      //console.log(year)
+    }
+
+    for (let i = 1; i <= weeksOfYear; i += 1) {
+      const start = getStartOfWeek(year, i);
+      const end = getEndOfWeek(start);
+      //console.log(year)
+      //console.log(start)
+      //console.log(end)
+      //const found = v.some(el => el.start.getTime() === start.getTime());
+      //if (found) {
+      //    console.log('found')
+      //    start = getStartOfWeek(year, i + 1);
+      //    end = getEndOfWeek(start);
+      //}
+
+      v.push({
+        id: `w-${start}`,
+        title: `${i}`,
+        start,
+        end,
+      })
+    }
+
+    iteration++;
+    numberOfYears--;
+  }
+  //console.log(getStartOfWeek(year, 2))
+  //console.log(moment().isoWeekYear(2021).isoWeek(1).startOf('week'))
+  //console.log(v);
+  return v
+}
+
 export const buildTimebar = () => [
   {
     id: 'quarters',
@@ -59,12 +171,18 @@ export const buildTimebar = () => [
     id: 'months',
     title: 'Months',
     cells: buildMonthCells(),
+    style: {},
+  },
+  {
+    id: 'weeks',
+    title: 'Weeks',
+    cells: buildWeekCells(),
     useAsGrid: true,
     style: {},
   },
 ]
 
-export const buildElement = ({ trackId, start, end, i }) => {
+export const buildElement = ({trackId, start, end, i}) => {
   const bgColor = nextColor()
   const color = colourIsLight(...hexToRgb(bgColor)) ? '#000000' : '#ffffff'
   return {

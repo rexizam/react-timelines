@@ -1,7 +1,11 @@
-export const START_YEAR = 2020
-export const NUM_OF_YEARS = 3
+import moment from "moment";
+
+export const START_YEAR = moment().isoWeekYear()
+export const NUM_OF_YEARS = 2
 export const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 export const MONTHS_PER_YEAR = 12
+export const MAX_WEEK_SPAN = 4
+export const MIN_WEEK_SPAN = 2
 export const QUARTERS_PER_YEAR = 4
 export const MONTHS_PER_QUARTER = 3
 export const NUM_OF_MONTHS = NUM_OF_YEARS * MONTHS_PER_YEAR
