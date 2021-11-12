@@ -1,6 +1,5 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-
 import Header from './Header'
 import Body from './Body'
 import NowMarker from './Marker/Now'
@@ -8,56 +7,54 @@ import PointerMarker from './Marker/Pointer'
 import getMouseX from '../../utils/getMouseX'
 import getGrid from '../../utils/getGrid'
 
-class Timeline extends Component {
-  constructor(props) {
-    super(props)
+const Timeline = (props) => {
 
-    this.state = {
-      pointerDate: null,
-      pointerVisible: false,
-      pointerHighlighted: false,
-    }
+  const {
+    now,
+    time,
+    timebar,
+    tracks,
+    sticky,
+    clickElement
+  } = props
+
+  const [pointerDate, setPointerDate] = useState(null)
+  const [pointerVisible, setPointerVisible] = useState(false)
+  const [pointerHighlighted, setPointerHighlighted] = useState(false)
+
+  const grid = getGrid(timebar)
+
+  const handleMouseMove = e => {
+    setPointerDate(time.fromX(getMouseX(e)))
   }
 
-  handleMouseMove = e => {
-    const { time } = this.props
-    this.setState({ pointerDate: time.fromX(getMouseX(e)) })
+  const handleMouseLeave = () => {
+    setPointerHighlighted(false)
   }
 
-  handleMouseLeave = () => {
-    this.setState({ pointerHighlighted: false })
+  const handleMouseEnter = () => {
+    setPointerVisible(true);
+    setPointerHighlighted(true)
   }
 
-  handleMouseEnter = () => {
-    this.setState({ pointerVisible: true, pointerHighlighted: true })
-  }
-
-  render() {
-    const { now, time, timebar, tracks, sticky, clickElement } = this.props
-
-    const { pointerDate, pointerVisible, pointerHighlighted } = this.state
-
-    const grid = getGrid(timebar)
-
-    return (
-      <div className="rt-timeline" style={{ width: time.timelineWidthStyle }}>
-        {now && <NowMarker now={now} visible time={time} />}
-        {pointerDate && (
-          <PointerMarker date={pointerDate} time={time} visible={pointerVisible} highlighted={pointerHighlighted} />
-        )}
-        <Header
-          time={time}
-          timebar={timebar}
-          onMove={this.handleMouseMove}
-          onEnter={this.handleMouseEnter}
-          onLeave={this.handleMouseLeave}
-          width={time.timelineWidthStyle}
-          sticky={sticky}
-        />
-        <Body time={time} grid={grid} tracks={tracks} clickElement={clickElement} />
-      </div>
-    )
-  }
+  return (
+    <div className="rt-timeline" style={{ width: time.timelineWidthStyle }}>
+      {now && <NowMarker now={now} visible time={time} />}
+      {pointerDate && (
+        <PointerMarker date={pointerDate} time={time} visible={pointerVisible} highlighted={pointerHighlighted} />
+      )}
+      <Header
+        time={time}
+        timebar={timebar}
+        onMove={handleMouseMove}
+        onEnter={handleMouseEnter}
+        onLeave={handleMouseLeave}
+        width={time.timelineWidthStyle}
+        sticky={sticky}
+      />
+      <Body time={time} grid={grid} tracks={tracks} clickElement={clickElement} />
+    </div>
+  )
 }
 
 Timeline.propTypes = {

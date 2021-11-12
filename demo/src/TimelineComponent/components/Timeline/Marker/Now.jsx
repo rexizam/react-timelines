@@ -1,21 +1,19 @@
-import React, { PureComponent } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
 import Marker from '.'
 import { getDayMonth } from '../../../utils/formatDate'
 
-class NowMarker extends PureComponent {
-  render() {
-    const { now, time, visible } = this.props
-    return (
-      <Marker modifier="now" x={time.toX(now)} visible={visible}>
-        <div>
-          <div>Today</div>
-          <strong>{getDayMonth(now)}</strong>
-        </div>
-      </Marker>
-    )
-  }
+const NowMarker = (props) => {
+  const { now, time, visible } = props
+  return (
+    <Marker modifier="now" x={time.toX(now)} visible={visible}>
+      <div>
+        <div>Today</div>
+        <strong>{getDayMonth(now)}</strong>
+      </div>
+    </Marker>
+  )
 }
 
 NowMarker.propTypes = {

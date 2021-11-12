@@ -13,7 +13,6 @@ const TrackKey = ({ track, toggleOpen, clickTrackButton }) => {
     }
     if (hasButton && clickTrackButton) {
       const handleClick = () => clickTrackButton(track)
-      // eslint-disable-next-line jsx-a11y/control-has-associated-label
       return <button className="rt-track-key__side-button" onClick={handleClick} type="button" />
     }
 
