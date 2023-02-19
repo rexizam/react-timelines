@@ -7,8 +7,8 @@
     "clean": "rimraf lib coverage",
     "build:js": "babel src/ -d lib/",
     "watch:js": "babel -w src/ -d lib/",
-    "build:css": "node-sass src/scss/style.scss lib/css/style.css",
-    "watch:css": "node-sass -w src/scss/style.scss lib/css/style.css",
+    "build:css": "sass src/scss/style.scss lib/css/style.css",
+    "watch:css": "sass -w src/scss/style.scss lib/css/style.css",
     "watch": "npm run watch:js & npm run watch:css",
     "build": "npm run clean && npm run build:js && npm run build:css",
     "test": "npm run lint && npm run unit",
@@ -64,13 +64,14 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^4",
     "jest": "^25.4.0",
-    "node-sass": "^4.14.0",
     "prettier": "^2.0.5",
     "react": "^16.13.1",
     "react-addons-test-utils": "^15.4.2",
     "react-dom": "16.13.1",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "sass": "^1.58.3"
   },
   "peerDependencies": {
     "react": ">=16",
@@ -94,8 +95,5 @@
     "setupFiles": [
       "../jestSetup.js"
     ]
-  },
-  "resolutions": {
-    "**/**/minimist": "1.2.5"
   }
 }
